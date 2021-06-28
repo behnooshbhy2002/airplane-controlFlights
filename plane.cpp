@@ -1,11 +1,28 @@
 #include<iostream>
+#include<stdio.h>
 #include<map>
 #include<cstdlib>
 #include<string>
 #include<cstring>
 #include<iomanip>
 using namespace std;
+int convert_to_int(string time)
+{
+        char *c , *str1 , *str2 ;
+        int t , hour , minute , t1;
 
+        c = const_cast<char*>(time.c_str());
+        str1=strtok( c , ":");
+        str2=strtok(NULL , "");
+        strcat(str1,str2);
+        t = atoi(str1);
+
+        hour= t/100;
+        minute= t%100;
+
+        t1 = hour*2 + ( minute >= 30 ? 1 : 0 );
+        return t1;
+}
 class flight{
 private:
     string time;
@@ -143,6 +160,9 @@ public:
            {
             cout<<"Band number : ";
             cin>>runway;
+
+            int t1=convert_to_int(time);
+            runways[runway][t1]=id;
            }
 
           else if( (type=="outgoing" && searchById(id)) || type=="incoming" )
@@ -183,7 +203,7 @@ public:
                       current->set_flight_number(flight_number);
                    }
 
-                current = current->getNextflight();
+                 current = current->getNextflight();
 
               }
 
@@ -196,28 +216,45 @@ public:
     }
     void print(int band)
     {
-        cout<<"---------------------------------------------------------------------------------\n";
-        cout<<"|"<<setw(5)<< left <<"Time\t|"<<setw(5)<< left <<"Type\t|"<<setw(5)<< left<<"Model\t|"<<setw(5)<< left<<"Flight number\t|"
-        <<setw(8)<< left<<"id\t|"<<setw(5)<< left<<"num_passengers\t|"<<setw(5)<< left<<"runway\t|"<<setw(5)<< left<<"\n";
-          cout<<"---------------------------------------------------------------------------------\n";
+        int end , start;
         if(band==0){
+            start=1;
+            end=5;
+        }
+        else{
+            start=band;
+            end=band;
+            cout<<endl<<"Runway "<<band;
+        }
+        cout<<"\n-----------------------------------------------------------------------------------------------\n";
+        printf("%-10s | %-10s | %-10s | %-15s | %-10s | %-10s | %-10s | \n" ,"Time" ,
+                                                  "Type" , "Model" , "flight_number" ,
+                                                        "id" , "passengers" ,"runway");
+        cout<<"-----------------------------------------------------------------------------------------------\n";
+
+
+
             for(int j=1; j<=48; j++){
-                for(int i=1; i<=5; i++){
+
+                for(int i=start; i<=end; i++){
 
                     if(runways[i][j] != 0)
                         {
 
                          flight* current = first;
+
                            while (current != NULL)
                              {
                                 if (current->get_id() ==runways[i][j])
                                  {
 
-                                   cout<<"|"<<setw(5)<< left <<current->get_time()<<"\t|"<<setw(5)<< left <<current->get_type()<<"\t|"
-                                   <<setw(5)<< left<<current->get_model()<<"\t|"<<setw(5)<< left<<current->get_flight_number()<<"\t|"
-                                   <<setw(8)<< left<<current->get_id()<<"\t|"<<setw(5)<< left<<current->get_passengers()<<"\t|"
-                                   <<setw(5)<< left<<current->get_runway()<<"\t|"<<setw(5)<< left<<"\n";
-                                    cout<<"---------------------------------------------------------------------------------\n";
+                                    printf("%-10s | %-10s | %-10s | " , current->get_time().c_str()  ,
+                                            current->get_type().c_str() , current->get_model().c_str());
+
+                                    printf( "%-15d | %-10d | %-10d | %-10d | \n" , current->get_flight_number() ,
+                                            current->get_id() , current->get_passengers() , current->get_runway());
+                                    cout<<"-----------------------------------------------------------------------------------------------\n";
+
                                  }
                                 current = current->getNextflight();
                              }
@@ -225,7 +262,6 @@ public:
                          }
                      }
                 }
-          }
     }
 
     void Delete(int f_n)
@@ -322,13 +358,6 @@ public:
         else if( model == "727" || model == "737" || model == "MAX 737")//1
             band=1;
 
-        else
-        {
-            cout<<"Enter plane model again : ";
-            cin>>name;
-            Band(name , time , id);
-        }
-
         check(band , time , id);
 
     }
@@ -347,6 +376,7 @@ public:
         minute= t%100;
 
         t1 = hour*2 + ( minute >= 30 ? 1 : 0 );
+
 
         for(i=band; i<=5; i++)
         {
@@ -400,6 +430,18 @@ public:
     {
         return number_of_flights;
     }
+    void destroy(){
+
+        flight *tmp=first;
+        while(tmp != nullptr){
+            flight *tp= tmp;
+            tmp=tmp->getNextflight();
+            delete tp;
+        }
+        this->number_of_flights=0;
+        this->first=nullptr;
+
+    }
 };
 
 int main()
@@ -441,6 +483,9 @@ int main()
             cout<<"Please enter number of runway (for all runways enter 0): ";
             cin>>band;
             x.print(band);
+            break;
+          case 0:
+            x.destroy();
             break;
       }
 
