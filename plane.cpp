@@ -55,7 +55,10 @@ public:
     }
     void set_type(string type)
     {
-        this->type = type;
+        if(type=="incoming" || type=="outgoing")
+            this->type = type;
+        else
+            this->type="incoming";
     }
     void set_passengers(int passengers)
     {
@@ -176,7 +179,11 @@ public:
             --itr;
             time=itr->first;
             runway=itr->second;
-            cout<<runway;
+
+             if(runway==0)
+                 cout<<"Please enter your flight information again \n";
+             else
+                 cout<<runway;
 
            }
 
@@ -484,7 +491,7 @@ int main()
 
     do{
       cout<<"\n\n( 1 ) Flight profile registration\n";
-      cout<<"( 2 ) Add flight flight list\n";
+      cout<<"( 2 ) Add flight list\n";
       cout<<"( 3 ) Cancel flight from flight list\n";
       cout<<"( 4 ) Sort flights by departure time\n";
       cout<<"( 5 ) Show flights\n";
