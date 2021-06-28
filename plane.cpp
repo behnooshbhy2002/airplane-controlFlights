@@ -212,7 +212,34 @@ public:
     }
     void sort()
     {
+        flight *current =first;
+        flight *tmp=nullptr;
+        string temp;
+         if(first ==nullptr)
+         {
+            return;
+         }
 
+         else
+         {
+            while(current != nullptr)
+            {
+
+                tmp = current ->getNextflight();
+
+                while(tmp != nullptr)
+                {
+
+                    if(current->get_time() > tmp->get_time()) {
+                        temp = current->get_time();
+                        current->get_time() = tmp->get_time();
+                        tmp->get_time() = temp;
+                    }
+                    tmp = tmp->getNextflight();
+                }
+                current = current->getNextflight();
+            }
+        }
     }
     void print(int band)
     {
