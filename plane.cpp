@@ -239,8 +239,8 @@ public:
 
                     if(current->get_time() > tmp->get_time()) {
                         temp = current->get_time();
-                        current->get_time() = tmp->get_time();
-                        tmp->get_time() = temp;
+                        current->set_time(tmp->get_time());
+                        tmp->set_time( temp ) ;
                     }
                     tmp = tmp->getNextflight();
                 }
